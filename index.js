@@ -1,52 +1,43 @@
-import { createApp } from "vue";
+import { createApp, ref } from "vue";
 import { GraffitiLocal } from "@graffiti-garden/implementation-local";
-import { GraffitiRemote } from "@graffiti-garden/implementation-remote";
-import { GraffitiPlugin } from "@graffiti-garden/wrapper-vue";
+import { GraffitiDecentralized } from "@graffiti-garden/implementation-decentralized";
+import {
+  GraffitiPlugin,
+  useGraffiti,
+  useGraffitiSession,
+  useGraffitiDiscover,
+} from "@graffiti-garden/wrapper-vue";
 
-const channels = ["designftw"];
+function setup() {
+  // Initialize Graffiti (you'll need this later)
+  const graffiti = useGraffiti();
+  const session = useGraffitiSession();
 
-createApp({
-  data() {
-    return {
-      myMessage: "",
-      sentMessageObjects: [],
-      messageObjects: [],
-    };
-  },
+  // Declare a signal for the message entered in the chat
+  const myMessage = ref("");
 
-  methods: {
-    sendMessage(session) {
-      this.sentMessageObjects.push({
-        value: {
-          content: this.myMessage,
-          published: Date.now(),
-        },
-        channels,
-      });
-    },
+  // Declare a signal representing the messages in the chat
+  const messageObjects = ref([]);
 
-    getMessages() {
-      const messageObjectsIterator = this.getMessageObjectsIterator();
+  function sendMessage() {
+    messageObjects.value.push({
+      value: {
+        content: myMessage.value,
+        published: Date.now(),
+      },
+    });
+  }
 
-      const newMessageObjects = [];
-      for (const { object } of messageObjectsIterator) {
-        newMessageObjects.push(object);
-      }
+  return {
+    myMessage,
+    messageObjects,
+    sendMessage,
+  };
+}
 
-      // Sort here
-
-      this.messageObjects = newMessageObjects;
-    },
-
-    *getMessageObjectsIterator() {
-      for (const object of this.sentMessageObjects) {
-        yield { object };
-      }
-    },
-  },
-})
+createApp({ template: "#template", setup })
   .use(GraffitiPlugin, {
     graffiti: new GraffitiLocal(),
-    // graffiti: new GraffitiRemote(),
+    // graffiti: new GraffitiDecentralized(),
   })
   .mount("#app");

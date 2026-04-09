@@ -7,17 +7,19 @@
         <script type="importmap">
             {
                 "imports": {
-                    "vue": "https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.esm-browser.js",
-                    "@graffiti-garden/implementation-local": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-local@0.6.4/dist/browser/index.js",
-                    "@graffiti-garden/implementation-remote": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-remote@0.6.2/dist/browser/index.js",
-                    "@graffiti-garden/wrapper-vue": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-vue@0.7.2/dist/browser/plugin.mjs"
+                    "vue": "https://cdn.jsdelivr.net/npm/vue@3.5.32/dist/vue.esm-browser.js",
+                    "@graffiti-garden/implementation-local": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-local@1.2.0/dist/browser/index.js",
+                    "@graffiti-garden/implementation-decentralized": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-decentralized@0.0.9/dist/browser/index.js",
+                    "@graffiti-garden/wrapper-vue": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-vue@1.2.2/dist/browser/plugin.mjs"
                 }
             }
         </script>
+        <script src="index.js" type="module"></script>
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
-        <div id="app">
+        <div id="app">Loading...</div>
+        <template id="template">
             <h1>DesignFTW Chatroom</h1>
             <button v-if="!$graffitiSession.value" @click="$graffiti.login()">
                 Log In
@@ -26,7 +28,7 @@
                 <button @click="$graffiti.logout($graffitiSession.value)">
                     Log Out
                 </button>
-                <form @submit.prevent="sendMessage($graffitiSession.value)">
+                <form @submit.prevent="sendMessage()">
                     <input
                         type="text"
                         v-model="myMessage"
@@ -38,14 +40,11 @@
 
             <h2>Messages</h2>
 
-            <button @click="getMessages()">Refresh messages</button>
             <ul>
                 <li v-for="object of messageObjects">
                     {{ object.value.content }}
                 </li>
             </ul>
-        </div>
-
-        <script src="index.js" type="module"></script>
+        </template>
     </body>
 </html>
