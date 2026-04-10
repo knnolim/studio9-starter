@@ -33,15 +33,16 @@
                         type="text"
                         v-model="myMessage"
                         placeholder="Message"
+                        :disabled="isSending"
                     />
-                    <input type="submit" value="Send" />
+                    <input :disabled="!myMessage || isSending" type="submit" :value="isSending ? 'Sending...' : 'Send'"/>
                 </form>
             </template>
 
             <h2>Messages</h2>
 
             <ul>
-                <li v-for="object of messageObjects">
+                <li v-for="object of sortedMessageObjects">
                     {{ object.value.content }}
                 </li>
             </ul>
